@@ -15,69 +15,67 @@
 
 * **Example 1: Testing merge sort on a massive dataset** 🏎️
 
-Parameters:
-```python
-N = 10000000
-iteration = 3
-list_of_methods = [merge_sort]
-Output:
+    Parameters:
+    ```python
+    N = 10000000
+    iteration = 3
+    list_of_methods = [merge_sort]
+    ```
+    Output:
 
-```
-Output:
+    ```bash
+    =========================================================================
+                                    RESULTS                  
+    =========================================================================
+    Name of sort algorithm:             merge_sort
+    Number of elements in array:        10,000,000
+    Number of iterations:               3
+    Mean time of sort:                  67.335583 sec
+    Min time of sort:                   66.564636 sec
+    Max time of sort:                   67.732268 sec
+    In comparison with built-in:        15.56x slower
+    =========================================================================
+    ```
 
-```bash
-=========================================================================
-                                RESULTS                  
-=========================================================================
-Name of sort algorithm:             merge_sort
-Number of elements in array:        10,000,000
-Number of iterations:               3
-Mean time of sort:                  67.335583 sec
-Min time of sort:                   66.564636 sec
-Max time of sort:                   67.732268 sec
-In comparison with built-in:        15.56x slower
-=========================================================================
-```
+* **Example 2: Testing and comparing all sorts** 🥊
 
-Example 2: Testing and comparing all sorts 🥊
+    Parameters:
+    ```python
+    N = 10000
+    iteration = 30 
+    list_of_methods = [merge_sort, bed_merge_sort, buble_sort]
+    ```
 
-Parameters:
-```python
-N = 10000
-iteration = 30 
-list_of_methods = [merge_sort, bed_merge_sort, buble_sort]
-```
-
-Output:
-```bash
-=========================================================================
-                                RESULTS                  
-=========================================================================
-Name of sort algorithm:             merge_sort
-Number of elements in array:        10,000
-Number of iterations:               30
-Mean time of sort:                  0.035577 sec
-Min time of sort:                   0.028933 sec
-Max time of sort:                   0.052431 sec
-In comparison with built-in:        23.84x slower
-=========================================================================
-Name of sort algorithm:             bad_merge_sort
-Number of elements in array:        10,000
-Number of iterations:               30
-Mean time of sort:                  7.419627 sec
-Min time of sort:                   5.578328 sec
-Max time of sort:                   9.098767 sec
-In comparison with built-in:        4971.17x slower
-=========================================================================
-Name of sort algorithm:             buble_sort
-Number of elements in array:        10,000
-Number of iterations:               30
-Mean time of sort:                  15.243006 sec
-Min time of sort:                   9.351046 sec
-Max time of sort:                   17.217606 sec
-In comparison with built-in:        10212.85x slower
-=========================================================================
-```
+    Output:
+    ```bash
+    =========================================================================
+                                    RESULTS                  
+    =========================================================================
+    Name of sort algorithm:             merge_sort
+    Number of elements in array:        10,000
+    Number of iterations:               30
+    Mean time of sort:                  0.035577 sec
+    Min time of sort:                   0.028933 sec
+    Max time of sort:                   0.052431 sec
+    In comparison with built-in:        23.84x slower
+    =========================================================================
+    Name of sort algorithm:             bad_merge_sort
+    Number of elements in array:        10,000
+    Number of iterations:               30
+    Mean time of sort:                  7.419627 sec
+    Min time of sort:                   5.578328 sec
+    Max time of sort:                   9.098767 sec
+    In comparison with built-in:        4971.17x slower
+    =========================================================================
+    Name of sort algorithm:             buble_sort
+    Number of elements in array:        10,000
+    Number of iterations:               30
+    Mean time of sort:                  15.243006 sec
+    Min time of sort:                   9.351046 sec
+    Max time of sort:                   17.217606 sec
+    In comparison with built-in:        10212.85x slower
+    =========================================================================
+    ```
 
 ---
 # 🛠️ How to test your own implementation?
