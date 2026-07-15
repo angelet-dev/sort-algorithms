@@ -1,4 +1,4 @@
-from bad_merge_sort import bed_merge_sort
+from bad_merge_sort import bad_merge_sort
 from merge_sort import merge_sort
 from buble_sort import buble_sort
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     all_unsort_arrays = []
 
     # =============================================================
-    list_of_methods = [buble_sort]
+    list_of_methods = [merge_sort, bad_merge_sort, buble_sort]
     
     # Don't use a very large N and many iterations at the same time!
     N = 10000
