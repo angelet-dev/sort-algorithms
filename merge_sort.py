@@ -1,44 +1,54 @@
 import math
 
 
-def merge_sort(arr: list[int]) -> list[int]:
+def merge_sort(arr: list[float]) -> list[float]:
     n = len(arr)
-    temp_arr = arr.copy()
     steps = math.ceil(math.log2(n))
-    for step in range(steps + 1):
-        size = 2 ** (step + 1)
-        temp_arr = arr.copy()
+
+    buffer = arr.copy()
+
+    read_arr = buffer
+    write_arr = arr
+
+    size = 1
+    for _ in range(steps):
+        size *= 2
+        read_arr, write_arr = write_arr, read_arr
+
         for i in range(math.ceil(n / size)):
             start_idx = i * size
             mid_idx = start_idx + size // 2
-            end_inx = min((i + 1) * size - 1, n - 1)
+            if mid_idx > n - 1:
+                write_arr[start_idx:] = read_arr[start_idx:]
+                break
+            end_idx = min(start_idx + size - 1, n - 1)
+
+            cell_size = end_idx - start_idx + 1
+
             left_idx = start_idx
             right_idx = mid_idx
-            if right_idx > n - 1:
-                break
-            left_val = temp_arr[left_idx]
-            right_val = temp_arr[right_idx]
 
-            for j in range(end_inx - start_idx + 1):
-                if left_val is not None and right_val is not None:
-                    if left_val > right_val:
-                        arr[start_idx + j] = right_val
-                        right_idx += 1
-                        right_val = (
-                            temp_arr[right_idx] if right_idx <= end_inx else None
-                        )
-                    else:
-                        arr[start_idx + j] = left_val
-                        left_idx += 1
-                        left_val = temp_arr[left_idx] if left_idx < mid_idx else None
+            left_val = read_arr[left_idx]
+            right_val = read_arr[right_idx]
+
+            for j in range(cell_size):
+                if left_val > right_val:
+                    write_arr[start_idx + j] = right_val
+                    right_idx += 1
+                    if right_idx > end_idx:
+                        right_val = float("inf")
+                        continue
+                    right_val = read_arr[right_idx]
+
                 else:
-                    if left_val is not None:
-                        arr[start_idx + j : end_inx + 1] = temp_arr[left_idx:mid_idx]
-                        break
-                    elif right_val is not None:
-                        arr[start_idx + j : end_inx + 1] = temp_arr[
-                            right_idx : end_inx + 1
-                        ]
-                        break
+                    write_arr[start_idx + j] = left_val
+                    left_idx += 1
+                    if left_idx >= mid_idx:
+                        left_val = float("inf")
+                        continue
+                    left_val = read_arr[left_idx]
 
-    return arr
+    if write_arr is not arr:
+        arr[:] = write_arr[:]
+
+    return
