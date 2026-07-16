@@ -1,6 +1,6 @@
 from bad_merge_sort import bad_merge_sort
 from merge_sort import merge_sort
-from buble_sort import buble_sort
+from bubble_sort import bubble_sort
 
 import time
 import random
@@ -12,6 +12,8 @@ import logging
 import numpy as np
 
 COUNT_CORE = os.cpu_count()
+
+
 logging.basicConfig(
     level=logging.WARNING,
     format="%(asctime)s [%(levelname)s] %(message)s", 
@@ -26,9 +28,8 @@ def test_sort_time(sort, array: list) -> float:
 
     start_time = time.time()
     sort(temp_array)
-    
     end_time = time.time()
-    if temp_array != standard:
+    if not np.array_equal(temp_array, standard):
         logging.error(f"CRITICAL: {sort.__name__} FAILED TO SORT THE ARRAY!")
         raise AssertionError(f"Algorithm {sort.__name__} is broken!")
     logging.info(f"{sort.__name__} finished in {end_time - start_time:.4f} sec")
@@ -36,22 +37,23 @@ def test_sort_time(sort, array: list) -> float:
 
 
 if __name__ == "__main__":
+
     st_sort = []
     all_unsort_arrays = []
 
     # =============================================================
-    list_of_methods = [merge_sort, bad_merge_sort, buble_sort]
+    list_of_methods = [merge_sort, bad_merge_sort, bubble_sort]
     
     # Don't use a very large N and many iterations at the same time!
-    N = 10000
-    iteration = 30 
+    N = random.randint(10,1000)
+    iteration = 30
 
-    # ==============================================================
+    # =============================================================
 
     list_of_times = [[] for _ in range(len(list_of_methods))]
     print("Start testing. It may take a lot of time...")
     for _ in range(iteration):
-        all_unsort_arrays.append([random.random() * N * 10 for _ in range(N)])
+        all_unsort_arrays.append([random.uniform(-1,1)*N for _ in range(N)])
 
     for i in range(len(list_of_methods)):
         logging.info(f"--- Testing method: {list_of_methods[i].__name__} (N = {N}) ---")

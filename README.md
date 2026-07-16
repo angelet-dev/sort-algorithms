@@ -43,7 +43,7 @@
     ```python
     N = 10000
     iteration = 30 
-    list_of_methods = [merge_sort, bed_merge_sort, buble_sort]
+    list_of_methods = [merge_sort, bed_merge_sort, bubble_sort]
     ```
 
     Output:
@@ -67,7 +67,7 @@
     Max time of sort:                   9.098767 sec
     In comparison with built-in:        4971.17x slower
     =========================================================================
-    Name of sort algorithm:             buble_sort
+    Name of sort algorithm:             bubble_sort
     Number of elements in array:        10,000
     Number of iterations:               30
     Mean time of sort:                  15.243006 sec
@@ -82,7 +82,7 @@
 
 Your custom sorting algorithm only needs to accept an unsorted list as an argument. Like this:
 
-```def buble_sort(arr: list): ```
+```def bubble_sort(arr: list): ```
 
 The specific return format of the function doesn't matter, as long as the algorithm properly sorts the input array in place.
 
@@ -105,8 +105,8 @@ pip install -r requirements.txt
 If a sorting algorithm fails to sort the array properly, the framework will detect it and raise the following error:
 
 ```python
-[ERROR] CRITICAL: buble_sort FAILED TO SORT THE ARRAY!
-AssertionError: Algorithm buble_sort is broken!
+[ERROR] CRITICAL: bubble_sort FAILED TO SORT THE ARRAY!
+AssertionError: Algorithm bubble_sort is broken!
 ```
 
 
