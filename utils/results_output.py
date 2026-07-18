@@ -13,19 +13,22 @@ def form_results(
     num_workers: int,
     iterations: int,
     sort_tag: str,
+    DTYPE: str,
 ) -> str:
 
     form_text = []
+    builtin_mean_time = np.mean(builtin_sort_times)
 
-    title = textwrap.dedent("""
+    title = textwrap.dedent(f"""
     =========================================================================
                                     RESULTS                  
+    =========================================================================
+    DTYPE = {DTYPE}  
+    Mean time of {sort_tag} = {builtin_mean_time:.6f} sec                       
     =========================================================================
     """).strip()
 
     form_text.append(title)
-
-    builtin_mean_time = np.mean(builtin_sort_times)
 
     for i in range(len(sort_func_list)):
         mean_time = np.mean(list_of_times[i])
@@ -52,14 +55,19 @@ def form_results(
     return "\n".join(form_text)
 
 
-def save_results_to_file(formatted_text: str, prefix: str = "bench") -> None:
+def save_results_to_file(
+    formatted_text: str, save_to_file: bool, prefix: str = "bench"
+) -> None:
+
+    if not save_to_file:
+        return None
 
     try:
-        os.makedirs("results", exist_ok=True)
+        os.makedirs("reports", exist_ok=True)
 
         time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        file_path = f"results/{prefix}_{time}.txt"
+        file_path = f"reports/{prefix}_{time}.txt"
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(formatted_text)

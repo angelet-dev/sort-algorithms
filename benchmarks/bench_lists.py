@@ -1,5 +1,4 @@
 import timeit
-import random
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import logging
@@ -7,16 +6,15 @@ import numpy as np
 import gc
 from utils import form_results, save_results_to_file
 
-def test_sort_time(sort, array: list) -> float:
+
+def measure_single_sort(sort, array: list, baseline: list) -> float:
     temp_array = array.copy()
-    standard = array.copy()
-    standard.sort()
 
     gc.collect()
 
     execute_time = timeit.timeit(lambda: sort(temp_array), number=1)
 
-    if not np.array_equal(temp_array, standard):
+    if not np.array_equal(temp_array, baseline):
         logging.error(f"CRITICAL: {sort.__name__} FAILED TO SORT THE ARRAY!")
         raise AssertionError(f"Algorithm {sort.__name__} is broken!")
     logging.info(f"{sort.__name__} finished in {execute_time:.6f} sec")
@@ -25,7 +23,12 @@ def test_sort_time(sort, array: list) -> float:
 
 
 def benchmark_runner_Python(
-    sort_func_list: list, array_size: int, iterations: int, num_workers: int
+    sort_func_list: list,
+    array_size: int,
+    iterations: int,
+    num_workers: int,
+    DTYPE: str,
+    save_to_file: bool,
 ) -> None:
 
     builtin_sort_times = np.zeros(shape=iterations)
@@ -35,35 +38,68 @@ def benchmark_runner_Python(
 
     print("Start testing. It may take a lot of time...")
     # Generating dataset
-    warm_up = [[1.0] for _ in range(num_workers)]
-    for _ in range(iterations):
-        all_unsorted_arrays.append(
-            [random.uniform(-1, 1) * array_size for _ in range(array_size)]
-        )
+    if DTYPE == "int":
+        warm_up = [[int(1)] for _ in range(num_workers)]
+    elif DTYPE == "float":
+        warm_up = [[float(1)] for _ in range(num_workers)]
+
+    partial_list = [
+        partial(measure_single_sort, sort_func_list[i])
+        for i in range(len(sort_func_list))
+    ]
 
     # Testing custom algorithms
-    for i, sort_func in enumerate(sort_func_list):
-        logging.info(
-            f"--- Testing method: {sort_func.__name__} (N = {array_size}, {i + 1}/{len(sort_func_list)}) ---"
-        )
-        with ProcessPoolExecutor(max_workers=num_workers) as executor:
-            run_test_with_method = partial(test_sort_time, sort_func_list[i])
+    step = min(iterations, num_workers)
+    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+        for func in partial_list:
+            list(executor.map(func, warm_up, warm_up))
 
-            list(executor.map(run_test_with_method, warm_up))
+        for j in range(step, iterations + step, step):
+            number_arrays = step if iterations - j >= 0 else iterations % step
+            if DTYPE == "int":
+                gen_array = np.random.default_rng().integers(
+                    low=-array_size, high=array_size, size=(number_arrays, array_size)
+                )
+            elif DTYPE == "float":
+                gen_array = np.random.default_rng().uniform(
+                    low=-1.0 * array_size,
+                    high=1.0 * array_size,
+                    size=(number_arrays, array_size),
+                )
+            all_unsorted_arrays = gen_array.tolist()
 
-            list_of_times[i, :] = np.array(list(
-                executor.map(run_test_with_method, all_unsorted_arrays)
-            ))
+                        # Testing Python built-in sort
+            logging.info("--- Testing Python built-in sort() ---")
+            baseline = all_unsorted_arrays.copy()
+            for i, _ in enumerate(baseline):
+                execute_time = timeit.timeit(lambda: baseline[i].sort(), number=1)
+                builtin_sort_times[i + j - step] = execute_time
+                logging.info(
+                    f"Python built-in sort() finished in {builtin_sort_times[i + j - step]:.6f} sec ({j - step + number_arrays}/{iterations})"
+                )
 
-    # Testing Python built-in sort
-    logging.info("--- Testing Python built-in sort() ---")
-    for i, array in enumerate(all_unsorted_arrays):
-        execute_time = timeit.timeit(lambda: array.sort(), number=1)
-        builtin_sort_times[i] = execute_time
+            for i, sort_func in enumerate(sort_func_list):
+                logging.info(
+                    f"--- Testing method: {sort_func.__name__} (N = {array_size}, {i + 1}/{len(sort_func_list)}, {j - step + number_arrays}/{iterations}) ---"
+                )
+
+                list_of_times[i, j - step : j] = np.array(
+                    list(executor.map(partial_list[i], all_unsorted_arrays, baseline))
+                )
+
 
 
     sort_tag = "built-in Tim Sort"
-    text = form_results(sort_func_list, list_of_times, builtin_sort_times, array_size, num_workers, iterations, sort_tag)
+    text = form_results(
+        sort_func_list,
+        list_of_times,
+        builtin_sort_times,
+        array_size,
+        num_workers,
+        iterations,
+        sort_tag,
+        DTYPE,
+    )
     print(text)
-    
-    save_results_to_file(text, "bench_list")
+
+    save_results_to_file(text, save_to_file, "bench_list")

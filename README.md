@@ -22,7 +22,8 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
 * **Multiprocessing**: Utilizes `ProcessPoolExecutor` from Python's built-in `concurrent.futures` module to bypass the GIL and utilize multiple CPU cores.
 * **Precision Timing**: Sorting duration is measured using the `timeit` module for microsecond-level accuracy.
 * **Isolated Environment**: At the end of each test iteration, an explicit garbage collection (`gc.collect()`) is triggered. This purges the heap, prevents memory accumulation, and eliminates cache noise for subsequent runs.
-* **Automated Logging**: All benchmark results are automatically saved into the `results/` directory as a `.txt` file for future analysis.
+* **Save reports**: Simply change `save_report` from `False` to `True` to automatically save benchmark reports into the `reports/` directory as a `.txt` file for future analysis.
+* **Logs**: Monitor the entire benchmarking process via real-time console logs, or easily turn them off if you prefer a clean terminal.
 ---
 
 ## 📊 Output Examples (test.py)
@@ -35,26 +36,31 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     list_of_methods = [numba_merge_sort]
 
     N = 10000000  # Size of the unsorted array
-    iterations = 9  #  Number of unique unsorted arrays to test
-    num_workers = 3  # Number of parallel processes
+    iterations = 18  #  Number of unique unsorted arrays to test
+    num_workers = 4  # Number of parallel processes
     built_in_sort: Literal["quicksort", "mergesort", "heapsort", "stable"] = "quicksort"  # NumPy built-in sort algorithm for comparison
+    save_report = False  # True - save report of benchmark to .txt | False - pass
+    DTYPE: Literal["int64", "float64"] = "float64"  # Data type of elements in array
 
     ```
     Output:
 
     ```bash
-   =========================================================================
+    =========================================================================
                                 RESULTS                  
+    =========================================================================
+    DTYPE = float64  
+    Mean time of build-in NumPy quicksort = 0.136329 sec                       
     =========================================================================
     Name of sort algorithm:             numba_merge_sort
     Number of elements in array:        10,000,000
-    Number of iterations:               9
-    Mean time of sort:                  1.498044 sec
-    Min time of sort:                   1.482607 sec
-    Max time of sort:                   1.517019 sec
-    Pure CPU time per core:             4.4941 sec
-    Number of workers (cores):          3 
-    In comparison with build-in NumPy quicksort: 12.37x slower
+    Number of iterations:               18
+    Mean time of sort:                  1.781694 sec
+    Min time of sort:                   1.681049 sec
+    Max time of sort:                   1.921536 sec
+    Pure CPU time per core:             8.0176 sec
+    Number of workers (cores):          4 
+    In comparison with build-in NumPy quicksort: 13.07x slower
     =========================================================================
     ```
 
@@ -65,55 +71,60 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     list_of_methods = [numba_merge_sort, merge_sort, bad_merge_sort, bubble_sort]
 
     N = 5000  
-    iterations = 90  
-    num_workers = 3  
+    iterations = 50  
+    num_workers = 4  
     built_in_sort: Literal["quicksort", "mergesort", "heapsort", "stable"] = "quicksort"  
+    save_report = False  
+    DTYPE: Literal["int64", "float64"] = "float64" 
     ```
 
     Output:
     ```bash
     =========================================================================
-                                    RESULTS                  
+                                RESULTS                  
+    =========================================================================
+    DTYPE = float64  
+    Mean time of build-in NumPy quicksort = 0.000044 sec                       
     =========================================================================
     Name of sort algorithm:             numba_merge_sort
     Number of elements in array:        5,000
-    Number of iterations:               90
-    Mean time of sort:                  0.000608 sec
-    Min time of sort:                   0.000425 sec
-    Max time of sort:                   0.000986 sec
-    Pure CPU time per core:             0.0182 sec
-    Number of workers (cores):          3 
-    In comparison with build-in NumPy quicksort: 14.78x slower
+    Number of iterations:               50
+    Mean time of sort:                  0.000615 sec
+    Min time of sort:                   0.000502 sec
+    Max time of sort:                   0.000945 sec
+    Pure CPU time per core:             0.0077 sec
+    Number of workers (cores):          4 
+    In comparison with build-in NumPy quicksort: 13.95x slower
     =========================================================================
     Name of sort algorithm:             merge_sort
     Number of elements in array:        5,000
-    Number of iterations:               90
-    Mean time of sort:                  0.030085 sec
-    Min time of sort:                   0.026490 sec
-    Max time of sort:                   0.053948 sec
-    Pure CPU time per core:             0.9025 sec
-    Number of workers (cores):          3 
-    In comparison with build-in NumPy quicksort: 731.75x slower
+    Number of iterations:               50
+    Mean time of sort:                  0.025938 sec
+    Min time of sort:                   0.015422 sec
+    Max time of sort:                   0.054569 sec
+    Pure CPU time per core:             0.3242 sec
+    Number of workers (cores):          4 
+    In comparison with build-in NumPy quicksort: 588.14x slower
     =========================================================================
     Name of sort algorithm:             bad_merge_sort
     Number of elements in array:        5,000
-    Number of iterations:               90
-    Mean time of sort:                  2.629360 sec
-    Min time of sort:                   2.155707 sec
-    Max time of sort:                   3.044143 sec
-    Pure CPU time per core:             78.8808 sec
-    Number of workers (cores):          3 
-    In comparison with build-in NumPy quicksort: 63954.05x slower
+    Number of iterations:               50
+    Mean time of sort:                  2.485507 sec
+    Min time of sort:                   1.896400 sec
+    Max time of sort:                   2.959303 sec
+    Pure CPU time per core:             31.0688 sec
+    Number of workers (cores):          4 
+    In comparison with build-in NumPy quicksort: 56359.02x slower
     =========================================================================
     Name of sort algorithm:             bubble_sort
     Number of elements in array:        5,000
-    Number of iterations:               90
-    Mean time of sort:                  8.450224 sec
-    Min time of sort:                   7.304895 sec
-    Max time of sort:                   9.049136 sec
-    Pure CPU time per core:             253.5067 sec
-    Number of workers (cores):          3 
-    In comparison with build-in NumPy quicksort: 205535.22x slower
+    Number of iterations:               50
+    Mean time of sort:                  8.032859 sec
+    Min time of sort:                   6.175907 sec
+    Max time of sort:                   10.140253 sec
+    Pure CPU time per core:             100.4107 sec
+    Number of workers (cores):          4 
+    In comparison with build-in NumPy quicksort: 182145.54x slower
     =========================================================================
     ```
 
@@ -127,6 +138,8 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     N = 10000000  # Size of the unsorted array
     iterations = 9  # Number of unique unsorted arrays to test
     num_workers = 3  # Number of parallel processes
+    save_report = False  # True - save report of benchmark to .txt | False - pass
+    DTYPE: Literal["int", "float"] = "float"  # Data type of elements in array
     ```
 
     Output:
@@ -134,15 +147,18 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     =========================================================================
                                 RESULTS                  
     =========================================================================
+    DTYPE = float  
+    Mean time of built-in Tim Sort = 3.921467 sec                       
+    =========================================================================
     Name of sort algorithm:             numba_merge_sort
     Number of elements in array:        10,000,000
-    Number of iterations:               9
-    Mean time of sort:                  12.974758 sec
-    Min time of sort:                   11.623023 sec
-    Max time of sort:                   13.868731 sec
-    Pure CPU time per core:             38.9243 sec
-    Number of workers (cores):          3 
-    In comparison with built-in Tim Sort: 3.65x slower
+    Number of iterations:               18
+    Mean time of sort:                  15.041842 sec
+    Min time of sort:                   12.074183 sec
+    Max time of sort:                   16.882942 sec
+    Pure CPU time per core:             67.6883 sec
+    Number of workers (cores):          4 
+    In comparison with built-in Tim Sort: 3.84x slower
     =========================================================================
     ```
 
@@ -154,7 +170,9 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
 
     N = 1000  
     iterations = 90  
-    num_workers = 3 
+    num_workers = 4 
+    save_report = False  
+    DTYPE: Literal["int", "float"] = "float"  
 
     ```
 
@@ -163,45 +181,48 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     =========================================================================
                                 RESULTS                  
     =========================================================================
+    DTYPE = float  
+    Mean time of built-in Tim Sort = 0.000098 sec                       
+    =========================================================================
     Name of sort algorithm:             numba_merge_sort
     Number of elements in array:        1,000
     Number of iterations:               90
-    Mean time of sort:                  0.001118 sec
-    Min time of sort:                   0.000913 sec
-    Max time of sort:                   0.001721 sec
-    Pure CPU time per core:             0.0335 sec
-    Number of workers (cores):          3 
-    In comparison with built-in Tim Sort: 12.83x slower
+    Mean time of sort:                  0.001315 sec
+    Min time of sort:                   0.000917 sec
+    Max time of sort:                   0.002368 sec
+    Pure CPU time per core:             0.0296 sec
+    Number of workers (cores):          4 
+    In comparison with built-in Tim Sort: 13.40x slower
     =========================================================================
     Name of sort algorithm:             merge_sort
     Number of elements in array:        1,000
     Number of iterations:               90
-    Mean time of sort:                  0.001562 sec
-    Min time of sort:                   0.001148 sec
-    Max time of sort:                   0.002211 sec
-    Pure CPU time per core:             0.0469 sec
-    Number of workers (cores):          3 
-    In comparison with built-in Tim Sort: 17.93x slower
+    Mean time of sort:                  0.001662 sec
+    Min time of sort:                   0.001197 sec
+    Max time of sort:                   0.002939 sec
+    Pure CPU time per core:             0.0374 sec
+    Number of workers (cores):          4 
+    In comparison with built-in Tim Sort: 16.93x slower
     =========================================================================
     Name of sort algorithm:             bad_merge_sort
     Number of elements in array:        1,000
     Number of iterations:               90
-    Mean time of sort:                  0.028371 sec
-    Min time of sort:                   0.024737 sec
-    Max time of sort:                   0.032691 sec
-    Pure CPU time per core:             0.8511 sec
-    Number of workers (cores):          3 
-    In comparison with built-in Tim Sort: 325.70x slower
+    Mean time of sort:                  0.029161 sec
+    Min time of sort:                   0.024211 sec
+    Max time of sort:                   0.055372 sec
+    Pure CPU time per core:             0.6561 sec
+    Number of workers (cores):          4 
+    In comparison with built-in Tim Sort: 297.13x slower
     =========================================================================
     Name of sort algorithm:             bubble_sort
     Number of elements in array:        1,000
     Number of iterations:               90
-    Mean time of sort:                  0.045157 sec
-    Min time of sort:                   0.042051 sec
-    Max time of sort:                   0.051551 sec
-    Pure CPU time per core:             1.3547 sec
-    Number of workers (cores):          3 
-    In comparison with built-in Tim Sort: 518.39x slower
+    Mean time of sort:                  0.043724 sec
+    Min time of sort:                   0.039067 sec
+    Max time of sort:                   0.084649 sec
+    Pure CPU time per core:             0.9838 sec
+    Number of workers (cores):          4 
+    In comparison with built-in Tim Sort: 445.52x slower
     =========================================================================
     ```
 ---
