@@ -221,6 +221,8 @@ To run a test, simply import your function and add it to the list_of_methods in 
 Before running the tests, you need to install the required external libraries (`numpy`, `numba`). You can easily do this using `pip`:
 
 ```bash
+git clone [https://github.com/angelet-dev/sort-algorithms.git](https://github.com/angelet-dev/sort-algorithms.git)
+cd sort-algorithms
 pip install -r requirements.txt
 ```
 
