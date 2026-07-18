@@ -5,7 +5,7 @@ from functools import partial
 import logging
 import numpy as np
 import gc
-from utils import form_results
+from utils import form_results, save_results_to_file
 
 def test_sort_time(sort, array: list) -> float:
     temp_array = array.copy()
@@ -63,4 +63,7 @@ def benchmark_runner_Python(
 
 
     sort_tag = "built-in Tim Sort"
-    form_results(sort_func_list, list_of_times, builtin_sort_times, array_size, num_workers, iterations, sort_tag)
+    text = form_results(sort_func_list, list_of_times, builtin_sort_times, array_size, num_workers, iterations, sort_tag)
+    print(text)
+    
+    save_results_to_file(text, "bench_list")

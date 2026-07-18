@@ -22,6 +22,7 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
 * **Multiprocessing**: Utilizes `ProcessPoolExecutor` from Python's built-in `concurrent.futures` module to bypass the GIL and utilize multiple CPU cores.
 * **Precision Timing**: Sorting duration is measured using the `timeit` module for microsecond-level accuracy.
 * **Isolated Environment**: At the end of each test iteration, an explicit garbage collection (`gc.collect()`) is triggered. This purges the heap, prevents memory accumulation, and eliminates cache noise for subsequent runs.
+* **Automated Logging**: All benchmark results are automatically saved into the `results/` directory as a `.txt` file for future analysis.
 ---
 
 ## 📊 Output Examples (test.py)

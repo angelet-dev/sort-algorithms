@@ -11,7 +11,7 @@ from algorithms.numpy_base_algos import merge_sort, bad_merge_sort, bubble_sort
 
 # If you want to see logs, change WARNING to INFO
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s [%(levelname)s] %(message)s", 
     datefmt="%H:%M:%S",
     force=True,
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Warning: Don't use a very large N and many iterations at the same time!
 
     N = 1000  # Size of the unsorted array
-    iterations = 90  #  Number of unique unsorted arrays to test
+    iterations = 80  #  Number of unique unsorted arrays to test
     num_workers = 3  # Number of parallel processes
     built_in_sort: Literal["quicksort", "mergesort", "heapsort", "stable"] = "quicksort"  # NumPy built-in sort algorithm for comparison
 
