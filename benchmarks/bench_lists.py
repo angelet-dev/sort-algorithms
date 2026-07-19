@@ -37,7 +37,7 @@ def benchmark_runner_Python(
     all_unsorted_arrays = []
 
     print("Start testing. It may take a lot of time...")
-    # Generating dataset
+    
     if DTYPE == "int":
         warm_up = [[int(1)] for _ in range(num_workers)]
     elif DTYPE == "float":
@@ -48,7 +48,7 @@ def benchmark_runner_Python(
         for i in range(len(sort_func_list))
     ]
 
-    # Testing custom algorithms
+    
     step = min(iterations, num_workers)
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         for func in partial_list:
@@ -68,16 +68,17 @@ def benchmark_runner_Python(
                 )
             all_unsorted_arrays = gen_array.tolist()
 
-                        # Testing Python built-in sort
-            logging.info("--- Testing Python built-in sort() ---")
+            # Testing Python built-in sort
             baseline = all_unsorted_arrays.copy()
-            for i, _ in enumerate(baseline):
+            logging.info(f"--- Testing Python built-in sort() ({j - step + number_arrays}/{iterations})---")
+            for i in range(len(baseline)):
                 execute_time = timeit.timeit(lambda: baseline[i].sort(), number=1)
                 builtin_sort_times[i + j - step] = execute_time
                 logging.info(
-                    f"Python built-in sort() finished in {builtin_sort_times[i + j - step]:.6f} sec ({j - step + number_arrays}/{iterations})"
+                    f"Python built-in sort() finished in {builtin_sort_times[i + j - step]:.6f} sec"
                 )
 
+            # Testing custom algorithms
             for i, sort_func in enumerate(sort_func_list):
                 logging.info(
                     f"--- Testing method: {sort_func.__name__} (N = {array_size}, {i + 1}/{len(sort_func_list)}, {j - step + number_arrays}/{iterations}) ---"

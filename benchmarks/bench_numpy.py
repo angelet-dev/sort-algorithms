@@ -45,7 +45,7 @@ def benchmark_runner_NumPy(
         for i in range(len(sort_func_list))
     ]
 
-    # Testing custom algorithms
+    
     step = min(iterations, num_workers)
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         for func in partial_list:
@@ -66,18 +66,18 @@ def benchmark_runner_NumPy(
                 )
             
             # Testing Python built-in sort
-            logging.info(f"--- Testing NumPy built-in {built_in_sort} ---")
             baseline = np.copy(all_unsorted_arrays)
-            for i, _ in enumerate(baseline):
+            logging.info(f"--- Testing NumPy built-in {built_in_sort} ({j - step + number_arrays}/{iterations})---")
+            for i in range(len(baseline)):
                 execute_time = timeit.timeit(
                     lambda: baseline[i].sort(kind=built_in_sort), number=1
                 )
                 builtin_sort_times[i + j - step] = execute_time
                 logging.info(
-                    f"NumPy built-in {built_in_sort} finished in {builtin_sort_times[i + j - step]:.6f} sec ({j - step + number_arrays}/{iterations})"
+                    f"NumPy built-in {built_in_sort} finished in {builtin_sort_times[i + j - step]:.6f} sec"
                 )
 
-            # Testing Python coustom sort
+            # Testing custom algorithms
             for i, sort_func in enumerate(sort_func_list):
                 logging.info(
                     f"--- Testing method: {sort_func.__name__} (N = {array_size}, {i + 1}/{len(sort_func_list)}, {j - step + number_arrays}/{iterations})) ---"
