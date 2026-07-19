@@ -136,8 +136,8 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
     list_of_methods = [numba_merge_sort]
 
     N = 10000000  # Size of the unsorted array
-    iterations = 9  # Number of unique unsorted arrays to test
-    num_workers = 3  # Number of parallel processes
+    iterations = 18  # Number of unique unsorted arrays to test
+    num_workers = 4  # Number of parallel processes
     save_report = False  # True - save report of benchmark to .txt | False - pass
     DTYPE: Literal["int", "float"] = "float"  # Data type of elements in array
     ```
@@ -230,7 +230,9 @@ To ensure high accuracy and deep hardware analysis, the benchmarking framework i
 
 Your custom sorting algorithm only needs to accept an unsorted list as an argument. Like this:
 
-```def bubble_sort(arr: list): ```
+```def <algorithm_name>(arr: list): ```
+or
+```def <algorithm_name>(arr: np.array): ```
 
 The specific return format of the function doesn't matter, as long as the algorithm properly sorts the input array in place.
 
